@@ -4,14 +4,13 @@ class Rational:
     def __init__(self, numerator = 1, denumerator = 1):
         if(denumerator == 0):
             raise ZeroDivisionError()
-        if isinstance(numerator, int):
-            raise TypeError()
-        if isinstance(denumerator, int):
-            raise TypeError()    
-         
-        self.__numenator = numerator
-        self.__denumenator = denumerator
-        
+        elif isinstance(numerator, int):
+            self.__numenator = numerator
+        elif isinstance(denumerator, int):
+            self.__denumenator = denumerator   
+        else: 
+            raise TypeError() 
+            
     def __str__(self):
         return f'{self.__numenator}/{self.__denumenator}'
 
