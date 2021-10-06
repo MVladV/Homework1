@@ -1,15 +1,16 @@
 class Rectangle:
 
     def __init__(self, length = 1, width = 1):
-        if isinstance(width, int):
-            self.__width = width
-        elif isinstance(lenght, int):
-            self.__length = lenght
-        else:
+        if not isinstance(width, int):
             raise TypeError()
-        
+        elif not isinstance(length, int):
+            raise TypeError()
+        else:
+            self.__width = width
+            self.__length = length
+
     def __str__(self):
-        return 'length = {}, width = {}'.format(self.__length, self.__width)
+        return f"length = {self.__length}, width = {self.__width}"
 
     def set_length(self, lenght=1.0):
 
