@@ -1,5 +1,6 @@
 import sys
 import os.path
+import numpy as np
 
 class STUDENT:
 
@@ -17,8 +18,7 @@ class STUDENT:
             self.__surname = surname
             self.__num_book = num_book
             self.__grades = grades
-            self.__gpa = 0
-
+            
     def get_info(self):
         a=len(self.__grades)
         b=sum(self.__grades)
@@ -26,7 +26,7 @@ class STUDENT:
         return c
 
     def GPA(self):
-        self.gpa = sum(self.__grades) / len(self.__grades)    
+        return sum(self.__grades) / len(self.__grades)    
 
     def __str__(self):
         return f'Name = {self.__name}\nSurname = {self.__surname}\nNumber = {self.__num_book}\nGrades: {self.__grades}'                 
@@ -34,7 +34,11 @@ class STUDENT:
 class GROUP:
     
     def __init__(self, *args):
-            self.products = args
+            self.__products = args
+            self.__len = len(args)
+
+    def products(self):
+        return self.__products        
 
     def products(self, products):
         if any(not isinstance(product, STUDENT) for product in products):
@@ -42,10 +46,20 @@ class GROUP:
         self.__products = list(products) 
 
     def best_st(self):
-        print(self.__products[1].__gpa)               
-
+        i = 0
+        n = self.__len
+        arr = [n]
+        arr[i] = [self.__products[i].GPA() for i in range(0,n)]
+        print(arr)
+        arr_max = np.argsort(arr)[-5:]
+        print("Top of Students:\n")
+        i = 0
+        while i < 5:
+            print(self.__products[i])
+            i += 1
+        
 class main:
-    #try:
+    try:
         st1 = STUDENT("Vlad", "Mitl", 1, [8, 5, 6, 3])
         st1.GPA()
         st2 = STUDENT("Vlad", "Mitl", 2, [7, 5, 6, 9])
@@ -61,9 +75,7 @@ class main:
         st7 = STUDENT("Mira", "Temp", 7, [5, 9, 6, 8])
         st7.GPA()
         gr = GROUP(st1, st2, st3, st4, st5, st6, st7)
-        gr.products()
         gr.best_st()
-    #except Exception:
+    except Exception:
         print("Exeption!")
 main()       
-
