@@ -1,40 +1,42 @@
 import sys
 import os.path
+import re
 
 class line:
 
     def __init__(self, file):
-        if not isinstance(file, str):
-            raise TypeError()     
-        else:
-            self.__file = file
-        self.__lines = 0
+        
+        self.file = file
         self.__letters = 0
         self.__words = 0
+        self.__sent = 0 
 
-    def get_info(self):
-        for line in open(self.__file):
-            self.__lines += 1
-            self.__letters += len(line)
+    @property
+    def file(self):  
+        return self.__file
 
-        pos = 'out'
-        for letter in line:
-            if letter != ' ' and pos == 'out':
-                self.__words += 1
-                pos = 'in'
-            elif letter == ' ':
-                pos = 'out'
+    @file.setter
+    def file(self, file):
+        check_file = os.path.exists('text.txt')
+        if check_file:
+            FileNotFoundError() 
+        self.__file = file 
 
+    def get_info(self): 
+        data = self.file.read() 
+        self.__words = len({x for x in re.findall(r'[A-z\']+', data)}) 
+        self.__letters = len(data)
+        new_text = re.sub(r'[.!?]\s', r'|', data)
+        self.__sent = len(new_text.split('|'))
+ 
+            
     def __str__(self):
-        return f'Lines = {self.__lines}\nWords = {self.__words}\nLetters = {self.__letters}'                 
+        return f'Words = {self.__words}\nLetters = {self.__letters} \nSentences = {self.__sent}'                 
 
 class main:
     try:
-        check_file = os.path.exists('text.txt')
-        if check_file:
-            FileNotFoundError()
-        fname = sys.argv[1]
-        work = line(fname)
+        file = open("text.txt", "rt")
+        work = line(file)
         work.get_info()
         print(work)
     except Exception:
