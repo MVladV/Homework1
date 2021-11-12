@@ -7,11 +7,10 @@ class Node:
       self.right = None
       if not isinstance(code, int):
             raise TypeError()
-      elif not isinstance(price, int):
+      if not isinstance(price, int):
             raise TypeError()
-      else:
-        self.code = code
-        self.price = price
+      self.code = code
+      self.price = price
 
 # Insert Node
    def insert(self, code, price):
@@ -34,7 +33,7 @@ class Node:
    def PrintTree(self):
       if self.left:
          self.left.PrintTree()
-      print(f'{self.code} - {self.price}')
+      print(f'\t{self.code} - {self.price}')
       if self.right:
          self.right.PrintTree()
 
@@ -73,7 +72,7 @@ class main:
         root.insert(31, 4450)
         root.insert(42, 1450)
         print(root.inorderTraversal(root)) 
-        print("All tree:\n")
+        print("\tAll tree:\n")
         root.PrintTree()
         code = int(input("Code of element: "))
         num = int(input("Number of elements: "))
@@ -83,4 +82,3 @@ class main:
     except Exception:
         print("Exeption!")
 main()       
-
