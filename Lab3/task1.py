@@ -9,10 +9,6 @@ import json
 
 
 class Events:
-    events_tickets = []
-    advance_tickets = 0
-    late_tickets = 0
-    student_tickets = 0
 
     def __init__(self, name_of_file, name, standard, advance, late, student, price):
         self.price_student = round(price * 0.5)  # студентський
@@ -125,6 +121,11 @@ class Events:
                f"{self.__late} late tickets, price - {self.late_price}, " \
                f"{self.__student} student tickets, price - {self.price_student} \n"
 
+    num_events = []
+    num_st = 0
+    num_advance = 0
+    num_late = 0
+
 
 class Tickets:
 
@@ -137,7 +138,7 @@ class Tickets:
         self.price = price
         self.type_t = type_t
         Tickets.add_ticket(self)
-        if len(self.event.events_tickets) > event.quantity:
+        if len(self.event.num_events) > event.quantity:
             raise ValueError("No more tickets.")
 
     @property
@@ -160,7 +161,7 @@ class Tickets:
             raise TypeError()
         if number <= 0:
             raise ValueError()
-        for ticket in self.event.events_tickets:
+        for ticket in self.event.num_events:
             if number in ticket.values():
                 raise ValueError()
         self.__number = number
@@ -224,8 +225,8 @@ class Student(Tickets):
         with open(event.name_of_file, "r") as read_file:
             info = json.load(read_file)
         super().__init__(event, number, days, info.get("Student price"), "Student ticket")
-        event.student_tickets += 1
-        if event.student_tickets > event.student:
+        event.num_st += 1
+        if event.num_st > event.student:
             raise ValueError()
 
 
@@ -237,8 +238,8 @@ class Advance(Tickets):
         with open(event.name_of_file, "r") as read_file:
             info = json.load(read_file)
         super().__init__(event, number, days, info.get("Advance price"), "Advance ticket")
-        event.advance_tickets += 1
-        if event.advance_tickets > event.advance:
+        event.num_advance += 1
+        if event.num_advance > event.advance:
             raise ValueError()
 
 
@@ -250,14 +251,14 @@ class Late(Tickets):
         with open(event.name_of_file, "r") as read_file:
             info = json.load(read_file)
         super().__init__(event, number, days, info.get("Late price"), "Late ticket")
-        event.late_tickets += 1
-        if event.late_tickets > event.late:
+        event.num_late += 1
+        if event.num_late > event.late:
             raise ValueError()
 
 
 def main():
     try:
-        event_1 = Events("event1.json", "Business Analyst course", 1, 2, 1, 3, 700)
+        event_1 = Events("event1.json", "Business Analyst course", 10, 2, 2, 5, 700)
         print(event_1)
 
         ticket_1 = Tickets(event_1, 1, 15, Tickets.standard_price(event_1.name_of_file))
