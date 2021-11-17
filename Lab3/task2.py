@@ -24,44 +24,12 @@ class Pizza:
             "Hawaiian"]
         self.total_bill = 0.0
 
-    def start(self):
-
-        df = pd.DataFrame(self.pizzas, columns=["Pizzas"])
-        df.loc[:4, "Prices"] = 12.50  # First 4 items.
-        df.loc[4:, "Prices"] = 20.30  # All the rest.
-        df.index += 1  # So that it's not zero-indexed.
-
-        print("Welcome to Pizza Planet!\n")  # So unoriginal, I know.
-        print("Today we want to offer you a delicious pizza of the day!")
-        day = datetime.datetime.today().weekday()
-        print(self.pizzas[int(day)])
-        answer = input("If you agree, input yes. Else input no.\n")
-        if answer == 'yes':
-            price = df.loc[int(day), "Prices"]
-            self.total_bill += price
-            print("Great, do you want to complement your pizza?")
-            answer = input("If you agree, input yes. Else input no.\n")
-            if answer == 'yes':
-                self.add()
-            else:
-                print("Your total bill is ${:.2f}.".format(self.total_bill))
-                print("Goodbye.")
-        elif answer == 'no':
-            self.order_pizza()
-            print("Great, do you want to complement your pizza?")
-            answer = input("If you agree, input yes. Else input no.\n")
-            if answer == 'yes':
-                self.add()
-            else:
-                print("Your total bill is ${:.2f}.".format(self.total_bill))
-                print("Goodbye.")
-
     def add(self):
 
         df = pd.DataFrame(self.products, columns=["Products"])
         df.loc[:4, "Prices"] = 1.50  # First 4 items.
         df.loc[4:, "Prices"] = 2.50  # All the rest.
-        df.index += 1  # So that it's not zero-indexed.
+        df.index += 1
         print("Here's our menu!\n")
         print(df.to_string(justify='left',
                            header=False,
@@ -138,12 +106,49 @@ class Pizza:
                 break
 
 
-def main():
+class Pizza_Day(Pizza):
+
+    def start(self):
+        
+        df = pd.DataFrame(self.pizzas, columns=["Pizzas"])
+        df.loc[:4, "Prices"] = 12.50  # First 4 items.
+        df.loc[4:, "Prices"] = 20.30  # All the rest.
+        df.index += 1  # So that it's not zero-indexed.
+
+        print("Welcome to Pizza Planet!\n")
+        print("Today we want to offer you a delicious pizza of the day!")
+        day = datetime.datetime.today().weekday()
+        print(self.pizzas[int(day)])
+        answer = input("If you agree, input yes. Else input no.\n")
+        if answer == 'yes':
+            price = df.loc[int(day), "Prices"]
+            self.total_bill += price
+            print("Great, do you want to complement your pizza?")
+            answer = input("If you agree, input yes. Else input no.\n")
+            if answer == 'yes':
+                self.add()
+            else:
+                print("Your total bill is ${:.2f}.".format(self.total_bill))
+                print("Goodbye.")
+        elif answer == 'no':
+            self.order_pizza()
+            print("Great, do you want to complement your pizza?")
+            answer = input("If you agree, input yes. Else input no.\n")
+            if answer == 'yes':
+                self.add()
+            else:
+                print("Your total bill is ${:.2f}.".format(self.total_bill))
+                print("Goodbye.")
+
+
+class main:
     try:
-        my_rect = Pizza()
-        my_rect.start()
+
+        order = Pizza_Day()
+        order.start()  # enter with Pizza of the day
+
     except Exception:
-        print("Exeption!")
+        print("Exception!")
 
 
 main()
