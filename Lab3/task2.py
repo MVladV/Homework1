@@ -4,7 +4,7 @@ import datetime
 
 class Pizza:
 
-    def __init__(self):
+    def __init__(self, name):
         self.products = [
             "Bacon",
             "Cheese",
@@ -23,6 +23,19 @@ class Pizza:
             "Bavarian",
             "Hawaiian"]
         self.total_bill = 0.0
+        self.name = name
+
+    @property
+    def name(self):
+        return self.__name
+
+    @name.setter
+    def name(self, name):
+        if not isinstance(name, str):
+            raise TypeError()
+        if not name:
+            raise ValueError()
+        self.__name = name
 
     def add(self):
 
@@ -30,7 +43,7 @@ class Pizza:
         df.loc[:4, "Prices"] = 1.50  # First 4 items.
         df.loc[4:, "Prices"] = 2.50  # All the rest.
         df.index += 1
-        print("Here's our menu!\n")
+        print(self.name + " here's our menu!\n")
         print(df.to_string(justify='left',
                            header=False,
                            formatters={
@@ -71,7 +84,7 @@ class Pizza:
         df.loc[4:, "Prices"] = 20.30  # All the rest.
         df.index += 1  # So that it's not zero-indexed.
 
-        print("You can order another pizza:\n")
+        print(self.name + ", you can order another pizza:\n")
         print(df.to_string(justify='left',
                            header=False,
                            formatters={
@@ -108,13 +121,17 @@ class Pizza:
 
 class Pizza_Day(Pizza):
 
+    def __init__(self, name):
+        super().__init__(name)  # викликаємо метод ініціалізації батьківського класу
+
     def start(self):
-        
+
         df = pd.DataFrame(self.pizzas, columns=["Pizzas"])
         df.loc[:4, "Prices"] = 12.50  # First 4 items.
         df.loc[4:, "Prices"] = 20.30  # All the rest.
         df.index += 1  # So that it's not zero-indexed.
 
+        print("Hello, " + self.name)
         print("Welcome to Pizza Planet!\n")
         print("Today we want to offer you a delicious pizza of the day!")
         day = datetime.datetime.today().weekday()
@@ -144,7 +161,7 @@ class Pizza_Day(Pizza):
 class main:
     try:
 
-        order = Pizza_Day()
+        order = Pizza_Day("Vlad")
         order.start()  # enter with Pizza of the day
 
     except Exception:
