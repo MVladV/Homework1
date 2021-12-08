@@ -88,8 +88,33 @@ class Notebook:
             raise TypeError
         self.persons.remove(person)
 
-    def __mul__(self, arg):
-        res = []
-        if not isinstance(arg, dict):
-            raise TypeError
-        # print(self.person.get(f'{user.id}'))
+    def __mul__(self, name):
+        for person in self.persons:
+            if person.name == name:
+                return person
+
+
+class main:
+    try:
+        user1 = Person("Мітлицький", "Влад", "+380964068502", date(2003, 4, 2))
+        # print(user1)
+        # print()
+        user2 = Person("Мельник", "Олег", "+380954058502", date(2000, 7, 25))
+        user3 = Person("Загорецький", "Іван", "+380984028135", date(2010, 9, 13))
+        user4 = Person("Калуш", "Віталій", "+380999999502", date(2001, 1, 3))
+
+        book = Notebook(user1, user2, user3)
+        print(book)
+        print()
+
+        book + user4
+        print(f'Add User #4:\n{book}\n')
+
+        book - user3
+        print(f'Delete User #3:\n{book}\n')
+
+        print(book * "Влад")
+
+        input('press enter to continue')
+    except Exception:
+        print("Exeption!")
