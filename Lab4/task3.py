@@ -123,14 +123,14 @@ class Teacher(ITeacher):
     def courses(self, courses):
         if not isinstance(courses, list):
             raise TypeError
-        if not all(isinstance(course, ICourse) for course in courses):
+        if not all(isinstance(course, Course) for course in courses):
             raise ValueError
         self.__courses = courses
 
     def __str__(self):
         return f'Teacher:' \
                f'\n\tname - {self.__name_teacher}' \
-               f'\n\tcourses - {",".join(x.name for x in self.__courses)}'
+               f'\n\tcourses - {self.__courses}'
 
 
 class OffsiteCourse(Course, IOffsiteCourse):
@@ -165,12 +165,18 @@ class CourseFactory(ICourseFactory):
         elif course_type == 'online':
             return OffsiteCourse(name, course_program, teacher)
 
+    def create_teacher(self, teacher, courses):
+        teacher.courses = courses
+        return teacher
+
 
 if __name__ == '__main__':
     teacher1 = Teacher('Vladislav')
     factory = CourseFactory()
     program = ['Print', 'List', 'Tuple']
     course = factory.create_course('English course', program, 'local', teacher1)
+    course_list = [course]
+    teacher1 = factory.create_teacher(teacher1, course_list)
     course.study()
     print(teacher1)
     print(course)
