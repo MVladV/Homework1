@@ -1,4 +1,15 @@
 from abc import abstractmethod, ABC
+from jsonschema import validate
+import json
+import jsonschema
+
+schema = {
+    "type": "object",
+    "name": {"type": "string"},
+    "program": {"type": "list"},
+    "type_course": {"type": "string"},
+    "teacher": {"type": "string"},
+}
 
 
 class ITeacher(ABC):
@@ -17,7 +28,7 @@ class ITeacher(ABC):
 class ICourseFactory(ABC):
 
     @abstractmethod
-    def create_course(self, name: str, course_program: list, course_type: str, teacher: ITeacher):
+    def create_course(self):
         pass
 
 
@@ -58,7 +69,7 @@ class Course(ICourse):
     def __init__(self, name_course, course_program, teacher):
         self.name_course = name_course
         self.course_program = course_program
-        self.teacher = teacher
+        self.name_teacher = teacher
 
     @property
     def name_course(self):
@@ -95,7 +106,6 @@ class Course(ICourse):
     def __str__(self) -> str:
         return f'Course:' \
                f'\n\tName of course - {self.__name_course}' \
-               f'\n\tTeacher - {self.__teacher.name_teacher}' \
                f'\n\tCourse`s program - {self.__course_program}'
 
 
@@ -103,7 +113,7 @@ class Teacher(ITeacher):
 
     def __init__(self, name_teacher):
         self.name_teacher = name_teacher
-        self.courses = []
+        self.courses = Course("1", ["1"], "1")
 
     @property
     def name_teacher(self):
@@ -121,10 +131,10 @@ class Teacher(ITeacher):
 
     @courses.setter
     def courses(self, courses):
-        if not isinstance(courses, list):
+        if not isinstance(courses, Course):
             raise TypeError
-        if not all(isinstance(course, Course) for course in courses):
-            raise ValueError
+        # if not all(isinstance(course, Course) for course in courses):
+        #     raise ValueError
         self.__courses = courses
 
     def __str__(self):
@@ -158,25 +168,60 @@ class LocalCourse(Course, ILocalCourse):
 
 
 class CourseFactory(ICourseFactory):
+    file_courses = []
 
-    def create_course(self, name, course_program, course_type, teacher):
-        if course_type == 'local':
-            return LocalCourse(name, course_program, teacher)
-        elif course_type == 'online':
-            return OffsiteCourse(name, course_program, teacher)
+    def __init__(self):
+        self.name = "English course"
+        self.program = ['Print', 'Math']
+        self.type = "local"
+        self.teacher_name = "Oleh"
+        self.teacher = Teacher(self.teacher_name)
 
-    def create_teacher(self, teacher, courses):
-        teacher.courses = courses
-        return teacher
+    def create_course(self):
+        if self.type == 'local':
+            return LocalCourse(self.name, self.program, self.teacher)
+        elif self.type == 'online':
+            return OffsiteCourse(self.name, self.program, self.teacher)
+
+    def create_teacher(self, course):
+        self.teacher.courses = course
+        return self.teacher
+
+    def get_info(self):
+        with open("info.json", "r") as read_file:
+            courses = json.load(read_file)
+        self.file_courses.append(courses)
+        for cours in self.file_courses:
+            self.name = cours["name"]
+            self.program = cours["program"]
+            self.type = cours["type_course"]
+            self.teacher_name = cours["teacher"]
+
+    def add_cource(self, name, program, type, teacher):  # add to .json file
+        my_course = {
+            "name": name,
+            "program": program,
+            "type_course": type,
+            "teacher": teacher
+        }
+        validate(instance={"name": "English course", "program": "['Print', 'List', 'Tuple']", "type_course": "local"},
+                 schema=schema)
+
+        with open("info.json", "w") as write_file:
+            json.dump(my_course, write_file)
+        write_file.close()
 
 
 if __name__ == '__main__':
-    teacher1 = Teacher('Vladislav')
-    factory = CourseFactory()
     program = ['Print', 'List', 'Tuple']
-    course = factory.create_course('English course', program, 'local', teacher1)
-    course_list = [course]
-    teacher1 = factory.create_teacher(teacher1, course_list)
-    course.study()
+    factory = CourseFactory()
+    factory.add_cource("English course", program, "local", "Vlad")
+    factory.get_info()
+    course = factory.create_course()
+    # course_list = []
+    # course_list.append(course)
+    teacher1 = factory.create_teacher(course)
+    print("Local")
     print(teacher1)
     print(course)
+
